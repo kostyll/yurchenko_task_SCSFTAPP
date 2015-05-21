@@ -1,12 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-// #include <unistd.h>
-// #include <string.h>
-// #include <sys/types.h>
-// #include <sys/socket.h>
-// #include <netinet/in.h>
-// #include <netdb.h> 
-#include <windows.h>
+#include < winsock2.h > 
+#include < ws2tcpip.h >
+#include < iostream >
 
 int MAX_BUFFER_SIZE = 1024;
 int MAX_FILENAME_LENGTH = 256;
@@ -142,6 +136,8 @@ int main(int argc, char *argv[])
     //      error("ERROR reading from socket");
     // printf("%s\n",buffer);
     // close(sockfd);
+    closesocket(clientSocket);
+    WSACleanup();
     printf("Done\n");
     return 0;
 }
