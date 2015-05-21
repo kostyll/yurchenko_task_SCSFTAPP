@@ -2,8 +2,8 @@
 #include < ws2tcpip.h >
 #include < iostream >
 
-int MAX_BUFFER_SIZE = 1024;
-int MAX_FILENAME_LENGTH = 256;
+#define MAX_BUFFER_SIZE 1024
+#define MAX_FILENAME_LENGTH 256
 
 void error(const char *msg)
 {
@@ -13,7 +13,7 @@ void error(const char *msg)
 
 int init_WSA(WSADATA *wsaData) {
     int result;
-    result = WSAStartup( MAKEWORD(2, 2), &wsaData);
+    result = WSAStartup( MAKEWORD(2, 2), wsaData);
     if(result != 0)
     {
      std::cout << "Error WSAStartup: " << result << std::endl;
@@ -24,7 +24,7 @@ int init_WSA(WSADATA *wsaData) {
 
 int main(int argc, char *argv[])
 {
-    // int sockfd, portno, n;
+    int sockfd, portno, n;
     WSADATA wsaData;
     SOCKET clientSocket = INVALID_SOCKET;
     char *filename;
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 
     printf("Sending file %s to host %s at port %d\n", filename, argv[1], portno);
 
-    if (not init_WSA(&wsaData)) error("WSA init error"); 
+    if (! init_WSA(&wsaData)) error("WSA init error"); 
 
     clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if( clientSocket == INVALID_SOCKET)
@@ -100,13 +100,13 @@ int main(int argc, char *argv[])
     // sending file info
     // filename length
     // write(sockfd, &filenamelength, sizeof(int));
-    send(clientSocket, &filenamelength, static_cast< int >(sizeof(int)), 0);
+    send(clientSocket, (char*)&filenamelength, static_cast< int >(sizeof(int)), 0);
     // filename
     // write(sockfd, filename, filenamelength);
     send(clientSocket, filename, static_cast< int >(filenamelength), 0);
     // filesize
     // write(sockfd, &filesize, sizeof(int));
-    send(clientSocket, &filesize, static_cast< int >(sizeof(int)), 0);
+    send(clientSocket, (char*)&filesize, static_cast< int >(sizeof(int)), 0);
 
     while (1) {
         n=fread(buffer, 1, MAX_BUFFER_SIZE, srcfile);
