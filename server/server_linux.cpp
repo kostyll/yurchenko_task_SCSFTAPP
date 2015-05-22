@@ -98,13 +98,14 @@ int main(int argc, char *argv[])
               error("ERROR on binding");
      listen(sockfd,5);
      clilen = sizeof(cli_addr);
-     newsockfd = accept(sockfd, 
-                 (struct sockaddr *) &cli_addr, 
-                 &clilen);
-     if (newsockfd < 0) 
-          error("ERROR on accept");
-     connection_handler(newsockfd);
-     
+     while (1) {
+         newsockfd = accept(sockfd, 
+                     (struct sockaddr *) &cli_addr, 
+                     &clilen);
+         if (newsockfd < 0) 
+              printf("ERROR on accept");
+         connection_handler(newsockfd);
+     };
      close(sockfd);
      return 0; 
 }
